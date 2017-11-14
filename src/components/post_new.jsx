@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { createPost } from '../actions';
 
 class PostNew extends Component{
 
@@ -19,7 +22,10 @@ class PostNew extends Component{
     }
 
     onSubmit(values){
-        console.log(values);
+        //El componente Route automaticamente agrega estos helpers a this.props        
+        this.props.createPost(values, ()=>{
+            this.props.history.push('/');
+        });
     }
 
     render() {
@@ -35,6 +41,7 @@ class PostNew extends Component{
                 <Field name="categories" label="Categories" component={this.renderField}/>
                 <Field name="content" label="Post Content" component={this.renderField}/>
                 <button type="submit" className="btn btn-primary">Submit</button>
+                <Link to="/" className="btn btn-danger">Cancel</Link>
             </form>
         )
     }
@@ -61,4 +68,6 @@ function validate(values){
 export default reduxForm({
     validate,
     form:'PostsNewForm'
-})(PostNew);
+})(
+    connect(null, { createPost })(PostNew)
+);
